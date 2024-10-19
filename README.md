@@ -48,6 +48,14 @@ Start the server
 ```bash
   python main.py
 ```
+
+Do not forget to allow microphone, and add
+
+```bash
+  http://raspberrypi.local
+```
+or your Raspberry Pi local server link to "Insecure origins treated as secure" in "chrome://flags/" in Google Chrome Experiments.
+
 ## Authors
 
 - [@codejapoe](https://codejapoe.xyz)
