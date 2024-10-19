@@ -1,0 +1,16 @@
+[
+    { "command": "lights on" },
+    { "command": "lights off" },
+    { "command": "open YouTube" },
+    { "command": "charging on" },
+    { "command": "charging off" },
+    { "command": "projector on" },
+    { "command": "projector off" },
+    { "command": "desk light on" },
+    { "command": "desk light off" },
+    { "command": "reading mode on" },
+    { "command": "reading mode off" },
+    { "command": "bed light on" },
+    { "command": "bed light off" },
+    { "command": "study mode" }
+]
