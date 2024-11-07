@@ -28,31 +28,31 @@ For detailed demostration, please watch this video from Facebook: https://fb.wat
 Clone the project
 
 ```bash
-  git clone https://github.com/codejapoe/Rena.git
+git clone https://github.com/codejapoe/Rena.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd Rena
+cd Rena
 ```
 
 Install dependencies
 
 ```bash
-  pip install flask pyflipper meta-ai-api
+pip install flask pyflipper meta-ai-api
 ```
 
 Start the server
 
 ```bash
-  python main.py
+python main.py
 ```
 
 Do not forget to allow microphone, and add
 
 ```bash
-  http://raspberrypi.local
+http://raspberrypi.local
 ```
 or your Raspberry Pi local server link to "Insecure origins treated as secure" in "chrome://flags/" in Google Chrome Experiments.
 
