@@ -4,7 +4,7 @@
 This repo contains source code of Project Rena, AI home assistant.
 
 
-Notes: Please add the main.py directory into the system init file so that it will be run at startup.
+Notes: Please add the main.py directory into the system init file so that it will run on startup.
 ## Demo
 
 For detailed demostration, please watch this video from Facebook: https://fb.watch/vjkZBWgqP6/
