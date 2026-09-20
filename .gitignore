@@ -1,0 +1,8 @@
+rena/
+venv/
+.venv/
+__pycache__/
+*.pyc
+state.json
+node_modules/
+dist/

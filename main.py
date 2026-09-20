@@ -1,150 +1,134 @@
-from flask import Flask, render_template, request
-from pyflipper import PyFlipper
-import time
-from meta_ai_api import MetaAI
-import json
+"""Rena — Smart Room Assistant.
 
-app = Flask(__name__, static_url_path='/static')
-flipper = PyFlipper(com="/dev/ttyACM0")
-app.config["TEMPLATES_AUTO_RELOAD"] = True
-ai = MetaAI()
+REST API over a Flipper Zero, exposing one room's IR and RF devices. Intended to be
+driven by the matterbridge-rena plugin, which presents these endpoints to Apple Home
+and Google Home as Matter accessories.
+
+Listens on 127.0.0.1:8080 — only the bridge on the same Pi needs to reach it.
+"""
+
+from flask import Flask, jsonify
+
+import devices
+import state
+
+app = Flask(__name__)
+
+HOST = "127.0.0.1"
+PORT = 8080
+
+
+@app.errorhandler(devices.FlipperError)
+def flipper_error(exc):
+    return jsonify(error=str(exc)), 500
+
+
+def _run(action, *args):
+    action(*args)
+    return "Success"
+
+
+# --- Astronaut star projector ---
 
 @app.route("/ast_projector_on")
 def ast_projector_on():
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='45')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='44')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='09')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='09')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='46')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='46')
-    return "Success"
+    return _run(devices.projector_on)
+
 
 @app.route("/ast_projector_off")
 def ast_projector_off():
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='45')
-    return "Success"
+    return _run(devices.projector_off)
+
+
+# --- Dragon RGB desk light ---
 
 @app.route("/dragon_rbg_on")
 def dragon_rbg_on():
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='0D')
-    return "Success"
+    return _run(devices.rgb_on)
+
 
 @app.route("/dragon_rbg_off")
 def dragon_rbg_off():
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='1F')
-    return "Success"
+    return _run(devices.rgb_off)
 
-@app.route("/pink_light")
-def pink_light():
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='45')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='45')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='44')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='09')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='09')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='46')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='46')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='0F')
-    return "Success"
-
-@app.route("/blue_light")
-def blue_light():
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='44')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='44')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='44')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='44')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='44')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='44')
-    time.sleep(0.1)
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='4C')
-    return "Success"
 
 @app.route("/next_color")
 def next_color():
-    flipper.ir.tx(protocol='NEC', hex_address='00', hex_command='44')
-    return "Success"
+    return _run(devices.next_color)
+
+
+# --- Color presets ---
+
+@app.route("/pink_light")
+def pink_light():
+    return _run(devices.pink_light)
+
+
+@app.route("/blue_light")
+def blue_light():
+    return _run(devices.blue_light)
+
+
+# --- RF wall sockets ---
 
 @app.route("/socket1_on")
 def socket1_on():
-    flipper.subghz.tx_from_file("/ext/subghz/On1.sub")
-    return "Success"
+    return _run(devices.socket_on, 1)
+
 
 @app.route("/socket2_on")
 def socket2_on():
-    flipper.subghz.tx_from_file("/ext/subghz/On2.sub")
-    return "Success"
+    return _run(devices.socket_on, 2)
+
 
 @app.route("/socket3_on")
 def socket3_on():
-    flipper.subghz.tx_from_file("/ext/subghz/On3.sub")
-    return "Success"
+    return _run(devices.socket_on, 3)
+
 
 @app.route("/socket1_off")
 def socket1_off():
-    flipper.subghz.tx_from_file("/ext/subghz/Off1.sub")
-    return "Success"
+    return _run(devices.socket_off, 1)
+
 
 @app.route("/socket2_off")
 def socket2_off():
-    flipper.subghz.tx_from_file("/ext/subghz/Off2.sub")
-    return "Success"
+    return _run(devices.socket_off, 2)
+
 
 @app.route("/socket3_off")
 def socket3_off():
-    flipper.subghz.tx_from_file("/ext/subghz/Off3.sub")
-    return "Success"
+    return _run(devices.socket_off, 3)
+
+
+# --- Scenes ---
 
 @app.route("/lights_on")
 def lights_on():
-    ast_projector_on()
-    time.sleep(0.1)
-    dragon_rbg_on()
-    return "Success"
+    return _run(devices.lights_on)
+
 
 @app.route("/lights_off")
 def lights_off():
-    ast_projector_off()
-    time.sleep(0.1)
-    dragon_rbg_off()
-    return "Success"
+    return _run(devices.lights_off)
+
 
 @app.route("/sleep")
 def sleep():
-    socket1_off()
-    time.sleep(0.1)
-    socket2_off()
-    time.sleep(0.1)
-    socket3_off()
-    time.sleep(0.1)
-    ast_projector_off()
-    time.sleep(0.1)
-    dragon_rbg_off()
-    return "Success"
+    return _run(devices.sleep)
 
-@app.route("/meta_ai", methods=['POST'])
-def meta_ai():
-    response = ai.prompt(message=request.get_json())
-    return json.dumps(response)
 
-@app.route("/")
-def index():
-    return render_template('index.html', code=200)
-  
+# --- Bridge support ---
+
+@app.route("/state")
+def get_state():
+    return jsonify(state.get())
+
+
+@app.route("/healthz")
+def healthz():
+    return jsonify(ok=True, flipper=devices.connected())
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80, debug=False)
+    app.run(host=HOST, port=PORT, debug=False)

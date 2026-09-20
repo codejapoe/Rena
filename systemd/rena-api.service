@@ -1,0 +1,31 @@
+[Unit]
+Description=Rena Smart Room Assistant API
+Documentation=https://github.com/codejapoe/Rena
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+# Needed for /dev/ttyACM0.
+SupplementaryGroups=dialout
+WorkingDirectory=/home/pi/Rena
+ExecStart=/home/pi/Rena/.venv/bin/python /home/pi/Rena/main.py
+Restart=always
+RestartSec=5
+
+# Single process only. The Flipper's serial port cannot be shared, and the
+# assumed-state cache lives in memory, so do not put this behind a multi-worker
+# WSGI server.
+
+# Hardening. ReadWritePaths covers state.json; /dev/ttyACM0 is reached through
+# the dialout group above.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=false
+ReadWritePaths=/home/pi/Rena
+
+[Install]
+WantedBy=multi-user.target

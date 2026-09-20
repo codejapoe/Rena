@@ -1,0 +1,56 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "Plugin name",
+      "type": "string",
+      "readOnly": true,
+      "ui:widget": "hidden"
+    },
+    "type": {
+      "description": "Plugin type",
+      "type": "string",
+      "readOnly": true,
+      "ui:widget": "hidden"
+    },
+    "baseUrl": {
+      "description": "Base URL of the Rena Flask API",
+      "type": "string",
+      "default": "http://127.0.0.1:8080"
+    },
+    "requestTimeout": {
+      "description": "Timeout in milliseconds for each API request",
+      "type": "number",
+      "default": 10000
+    },
+    "pollInterval": {
+      "description": "Seconds between state refreshes from the API (0 disables polling)",
+      "type": "number",
+      "default": 60
+    },
+    "whiteList": {
+      "description": "Only expose these accessories (empty means all)",
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true,
+      "selectFrom": "name"
+    },
+    "blackList": {
+      "description": "Never expose these accessories",
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true,
+      "selectFrom": "name"
+    },
+    "unregisterOnShutdown": {
+      "description": "Unregister all accessories on shutdown (for development only)",
+      "type": "boolean",
+      "default": false
+    },
+    "debug": {
+      "description": "Enable debug logging for this plugin",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

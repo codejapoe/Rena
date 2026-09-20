@@ -1,0 +1,36 @@
+{
+  "name": "matterbridge-rena",
+  "version": "2.0.0",
+  "description": "Rena Smart Room Assistant",
+  "author": "codejapoe",
+  "license": "MIT",
+  "homepage": "https://github.com/codejapoe/Rena",
+  "keywords": [
+    "matterbridge",
+    "matter",
+    "homekit",
+    "google-home",
+    "flipper-zero",
+    "raspberry-pi"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "files": [
+    "dist",
+    "matterbridge-rena.schema.json"
+  ],
+  "scripts": {
+    "link": "npm link matterbridge",
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "rebuild": "npm run clean && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}
